@@ -31,14 +31,17 @@ function Model({
   const { actions } = useAnimations(gltf.animations, gltf.scene)
 
 
-  useEffect(() => {
-    if (actions) {
-      const firstAction = Object.values(actions)[0]
-      if (firstAction) {
-        firstAction.reset().fadeIn(0.5).play()
-      }
-    }
-  }, [actions])
+ useEffect(() => {
+  if (actions) {
+    Object.values(actions).forEach(action => {
+      action.reset()
+      action.setLoop(THREE.LoopRepeat, Infinity)
+      action.fadeIn(0.5)
+      action.play()
+    })
+  }
+}, [actions])
+
 
   return (
     <primitive
