@@ -1,39 +1,34 @@
-'use client'
-
 import { useState, useEffect, useRef, useMemo } from 'react'
-import { useFrame } from '@react-three/fiber'
 import Scene from '@/components/Scene'
+import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-// ---------------- Smoke Component ----------------
-function Smoke({ position = [0, 0, 0], count = 150 }: { position?: [number, number, number]; count?: number }) {
+// Smoke component
+function Smoke({ position = [0, 0, 0], count = 200 }) {
   const particles = useRef<THREE.Points>(null)
 
-  // Particle positions
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3)
     for (let i = 0; i < count; i++) {
-      arr[i * 3 + 0] = (Math.random() - 0.5) * 0.1 // x
-      arr[i * 3 + 1] = Math.random() * 0.5         // y
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 0.1 // z
+      arr[i * 3 + 0] = (Math.random() - 0.5) * 0.1
+      arr[i * 3 + 1] = Math.random() * 0.5
+      arr[i * 3 + 2] = (Math.random() - 0.5) * 0.1
     }
     return arr
   }, [count])
 
-  // Particle upward velocities
   const velocities = useMemo(() => {
     const arr = new Float32Array(count)
     for (let i = 0; i < count; i++) arr[i] = 0.01 + Math.random() * 0.01
     return arr
   }, [count])
 
-  // Animate particles
   useFrame(() => {
     if (!particles.current) return
     const posArray = particles.current.geometry.attributes.position.array as Float32Array
     for (let i = 0; i < count; i++) {
-      posArray[i * 3 + 1] += velocities[i] // rise
-      if (posArray[i * 3 + 1] > 1) posArray[i * 3 + 1] = 0 // reset
+      posArray[i * 3 + 1] += velocities[i]
+      if (posArray[i * 3 + 1] > 1) posArray[i * 3 + 1] = 0
     }
     particles.current.geometry.attributes.position.needsUpdate = true
   })
@@ -48,7 +43,6 @@ function Smoke({ position = [0, 0, 0], count = 150 }: { position?: [number, numb
   )
 }
 
-// ---------------- Home Component ----------------
 export default function Home() {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
   const [lightIntensity, setLightIntensity] = useState({ directional: 1.8, ambient: 1 })
@@ -72,13 +66,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div
-      style={{
-        width: windowSize.width || '100vw',
-        height: windowSize.height || '100vh',
-        overflow: 'hidden',
-      }}
-    >
+    <div style={{ width: windowSize.width || '100vw', height: windowSize.height || '100vh', overflow: 'hidden' }}>
       <Scene
         modelPosition={[1, -1.3, -2]}
         modelScale={2.0}
@@ -90,12 +78,12 @@ export default function Home() {
         directionalLightIntensity={lightIntensity.directional}
         ambientLightIntensity={lightIntensity.ambient}
       >
-        {/* Smoke positioned at the tip of your model */}
         <Smoke position={[1, 0.5, -2]} count={200} />
       </Scene>
     </div>
   )
 }
+
 
 
 
