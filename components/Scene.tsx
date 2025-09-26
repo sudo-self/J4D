@@ -18,7 +18,7 @@ interface SceneProps {
 }
 
 function Model({
-  position = [1.5, -0.1, -1.5],
+  position = [1.5, -0.1, -1.5] as [number, number, number],
   scale = 1,
   rotationY = 0,
 }: {
@@ -30,8 +30,17 @@ function Model({
   return <primitive object={gltf.scene} position={position} scale={scale} rotation-y={rotationY} />
 }
 
-// Reusable Rope/Trim Component
-function Rope({ start, end, radius = 0.03, color = '#00ffff' }: { start: [number, number, number]; end: [number, number, number]; radius?: number; color?: string }) {
+function Rope({
+  start,
+  end,
+  radius = 0.03,
+  color = '#00ffff',
+}: {
+  start: [number, number, number]
+  end: [number, number, number]
+  radius?: number
+  color?: string
+}) {
   const dir = new THREE.Vector3(...end).sub(new THREE.Vector3(...start))
   const length = dir.length()
   const mid = new THREE.Vector3(...start).add(dir.multiplyScalar(0.5))
@@ -39,14 +48,14 @@ function Rope({ start, end, radius = 0.03, color = '#00ffff' }: { start: [number
   const quaternion = new THREE.Quaternion().setFromUnitVectors(axis, dir.clone().normalize())
 
   return (
-    <mesh position={mid} quaternion={quaternion}>
+    <mesh position={mid as [number, number, number]} quaternion={quaternion}>
       <cylinderGeometry args={[radius, radius, length, 16]} />
       <meshStandardMaterial color={color} emissive={color} emissiveIntensity={1} />
     </mesh>
   )
 }
 
-function FloorBlock({ position = [0, -1, 0] }) {
+function FloorBlock({ position = [0, -1, 0] as [number, number, number] }) {
   const diffuse = useLoader(THREE.TextureLoader, '/checkered_pavement_tiles_diff_1k.png')
   const normal = useLoader(THREE.TextureLoader, '/checkered_pavement_tiles_normal_1k.png')
   const roughness = useLoader(THREE.TextureLoader, '/checkered_pavement_tiles_rough_1k.png')
@@ -63,22 +72,27 @@ function FloorBlock({ position = [0, -1, 0] }) {
   const floorSize = 9
 
   const floorEdges = [
-    { start: [-floorSize / 2, stepHeight + 0.03, floorSize / 2], end: [floorSize / 2, stepHeight + 0.03, floorSize / 2] }, // front
-    { start: [-floorSize / 2, stepHeight + 0.03, -floorSize / 2], end: [floorSize / 2, stepHeight + 0.03, -floorSize / 2] }, // back
-    { start: [floorSize / 2, stepHeight + 0.03, -floorSize / 2], end: [floorSize / 2, stepHeight + 0.03, floorSize / 2] }, // right
-    { start: [-floorSize / 2, stepHeight + 0.03, -floorSize / 2], end: [-floorSize / 2, stepHeight + 0.03, floorSize / 2] }, // left
+    { start: [-floorSize / 2, stepHeight + 0.03, floorSize / 2] as [number, number, number], end: [floorSize / 2, stepHeight + 0.03, floorSize / 2] as [number, number, number] },
+    { start: [-floorSize / 2, stepHeight + 0.03, -floorSize / 2] as [number, number, number], end: [floorSize / 2, stepHeight + 0.03, -floorSize / 2] as [number, number, number] },
+    { start: [floorSize / 2, stepHeight + 0.03, -floorSize / 2] as [number, number, number], end: [floorSize / 2, stepHeight + 0.03, floorSize / 2] as [number, number, number] },
+    { start: [-floorSize / 2, stepHeight + 0.03, -floorSize / 2] as [number, number, number], end: [-floorSize / 2, stepHeight + 0.03, floorSize / 2] as [number, number, number] },
   ]
 
   return (
     <group position={position}>
       {[2, 1, 0].map(i => (
-        <mesh key={i} position={[0, -stepHeight * i, 0]} receiveShadow castShadow>
+        <mesh
+          key={i}
+          position={[0, -stepHeight * i, 0] as [number, number, number]}
+          receiveShadow
+          castShadow
+        >
           <boxGeometry args={[stepWidth * (0.9 + i * 0.05), stepHeight, stepDepth * (0.9 + i * 0.05)]} />
           <meshStandardMaterial color={`#${(7 + i).toString().repeat(3)}`} />
         </mesh>
       ))}
 
-      <mesh rotation-x={-Math.PI / 2} position={[0, stepHeight * 0.5, 0]} receiveShadow castShadow>
+      <mesh rotation-x={-Math.PI / 2} position={[0, stepHeight * 0.5, 0] as [number, number, number]} receiveShadow castShadow>
         <planeGeometry args={[floorSize, floorSize, 32, 32]} />
         <meshStandardMaterial
           map={diffuse}
@@ -96,7 +110,7 @@ function FloorBlock({ position = [0, -1, 0] }) {
   )
 }
 
-function Wall({ position = [0, 2.5, -5], rotationY = 0 }) {
+function Wall({ position = [0, 2.5, -5] as [number, number, number], rotationY = 0 }) {
   const meshRef = useRef<THREE.Mesh>(null)
   const texture = useLoader(THREE.TextureLoader, '/wall.jpg')
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping
@@ -133,13 +147,13 @@ function Wall({ position = [0, 2.5, -5], rotationY = 0 }) {
   const trimOffset = 0.05
 
   const wallTrims = [
-    { start: [-wallWidth / 2, wallHeight / 2 - trimOffset, 0], end: [wallWidth / 2, wallHeight / 2 - trimOffset, 0] },
-    { start: [-wallWidth / 2, -wallHeight / 2 + trimOffset, 0], end: [wallWidth / 2, -wallHeight / 2 + trimOffset, 0] },
+    { start: [-wallWidth / 2, wallHeight / 2 - trimOffset, 0] as [number, number, number], end: [wallWidth / 2, wallHeight / 2 - trimOffset, 0] as [number, number, number] },
+    { start: [-wallWidth / 2, -wallHeight / 2 + trimOffset, 0] as [number, number, number], end: [wallWidth / 2, -wallHeight / 2 + trimOffset, 0] as [number, number, number] },
   ]
 
   const verticalRopes = [
-    { start: [-wallWidth / 2, -wallHeight / 2 + trimOffset, 0], end: [-wallWidth / 2, wallHeight / 2 - trimOffset, 0] },
-    { start: [wallWidth / 2, -wallHeight / 2 + trimOffset, 0], end: [wallWidth / 2, wallHeight / 2 - trimOffset, 0] },
+    { start: [-wallWidth / 2, -wallHeight / 2 + trimOffset, 0] as [number, number, number], end: [-wallWidth / 2, wallHeight / 2 - trimOffset, 0] as [number, number, number] },
+    { start: [wallWidth / 2, -wallHeight / 2 + trimOffset, 0] as [number, number, number], end: [wallWidth / 2, wallHeight / 2 - trimOffset, 0] as [number, number, number] },
   ]
 
   return (
@@ -167,31 +181,30 @@ export default function Scene({
   ambientLightIntensity,
 }: SceneProps) {
   return (
-    <Canvas shadows camera={{ position: [-8, 5, 8], fov: 60 }}>
+    <Canvas shadows camera={{ position: [-8, 5, 8] as [number, number, number], fov: 60 }}>
       <ambientLight intensity={ambientLightIntensity ?? 1.2} />
       <directionalLight
-        position={directionalLightPosition ?? [5, 10, 7]}
+        position={directionalLightPosition ?? [5, 10, 7] as [number, number, number]}
         intensity={directionalLightIntensity ?? 2}
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
       />
-      <directionalLight position={[-5, 5, 5]} intensity={1} color={0xffffff} />
-      <directionalLight position={[0, 5, -5]} intensity={0.8} color={0xffffff} />
+      <directionalLight position={[-5, 5, 5] as [number, number, number]} intensity={1} color={0xffffff} />
+      <directionalLight position={[0, 5, -5] as [number, number, number]} intensity={0.8} color={0xffffff} />
 
-      <FloorBlock position={floorPosition ?? [0, -0.5, 0]} />
-      <Wall position={backWallPosition ?? [0, 2.5, -5]} />
-      <Wall position={sideWallPosition ?? [5, 2.5, 0]} rotationY={Math.PI / 2} />
+      <FloorBlock position={floorPosition ?? [0, -0.5, 0] as [number, number, number]} />
+      <Wall position={backWallPosition ?? [0, 2.5, -5] as [number, number, number]} />
+      <Wall position={sideWallPosition ?? [5, 2.5, 0] as [number, number, number]} rotationY={Math.PI / 2} />
 
       <Suspense fallback={null}>
         <Model position={modelPosition} scale={modelScale} rotationY={modelRotationY} />
       </Suspense>
 
-      <OrbitControls enableDamping target={[-0.7, 0.5, -0.5]} />
+      <OrbitControls enableDamping target={[-0.7, 0.5, -0.5] as [number, number, number]} />
     </Canvas>
   )
 }
-
 
 
 
