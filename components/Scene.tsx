@@ -30,17 +30,28 @@ function Model({
   const gltf = useGLTF('/j4d.glb')
   const { actions } = useAnimations(gltf.animations, gltf.scene)
 
+  useEffect(() => {
+    if (actions) {
+      Object.values(actions).forEach(action => {
+        if (action) {
+          action.reset()
+          action.setLoop(THREE.LoopRepeat, Infinity)
+          action.fadeIn(0.5)
+          action.play()
+        }
+      })
+    }
+  }, [actions])
 
- useEffect(() => {
-  if (actions) {
-    Object.values(actions).forEach(action => {
-      action.reset()
-      action.setLoop(THREE.LoopRepeat, Infinity)
-      action.fadeIn(0.5)
-      action.play()
-    })
-  }
-}, [actions])
+  return (
+    <primitive
+      object={gltf.scene}
+      position={pos}
+      scale={scale}
+      rotation-y={rotationY}
+    />
+  )
+}
 
 
   return (
