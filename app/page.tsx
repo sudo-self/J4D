@@ -8,16 +8,16 @@ export default function Home() {
   const [lightIntensity, setLightIntensity] = useState({ directional: 1.8, ambient: 1 })
 
   useEffect(() => {
-    function handleResize() {
+    const handleResize = () => {
       const width = window.innerWidth
       const height = window.innerHeight
       setWindowSize({ width, height })
 
-
+   
       if (width < 768) {
         setLightIntensity({ directional: 2.0, ambient: 1.2 })
       } else {
-        setLightIntensity({ directional: 1.9, ambient: 1.1 }) 
+        setLightIntensity({ directional: 1.9, ambient: 1.1 })
       }
     }
 
@@ -27,7 +27,13 @@ export default function Home() {
   }, [])
 
   return (
-    <div style={{ width: windowSize.width, height: windowSize.height }}>
+    <div
+      style={{
+        width: windowSize.width || '100vw',
+        height: windowSize.height || '100vh',
+        overflow: 'hidden',
+      }}
+    >
       <Scene
         modelPosition={[1, -1.3, -2]}
         modelScale={2.0}
@@ -42,6 +48,7 @@ export default function Home() {
     </div>
   )
 }
+
 
 
 
