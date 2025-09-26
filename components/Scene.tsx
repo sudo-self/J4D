@@ -187,7 +187,12 @@ export default function Scene({
   ambientLightIntensity,
 }: SceneProps) {
   return (
-    <Canvas shadows camera={{ position: [-8, 5, 8], fov: 60 }}>
+    <Canvas
+      shadows
+      camera={{ position: [-8, 5, 8], fov: 60 }}
+      gl={{ antialias: true }}
+      onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000))} 
+    >
       <ambientLight intensity={ambientLightIntensity ?? 1.2} />
       <directionalLight
         position={directionalLightPosition ?? [5, 10, 7]}
@@ -211,4 +216,5 @@ export default function Scene({
     </Canvas>
   )
 }
+
 
