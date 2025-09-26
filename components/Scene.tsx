@@ -17,21 +17,14 @@ interface SceneProps {
   ambientLightIntensity?: number
 }
 
-function Model({
-  position,
-  scale = 1,
-  rotationY = 0,
-}: {
-  position?: [number, number, number]
-  scale?: number
-  rotationY?: number
-}) {
+function Model({ position, scale = 1, rotationY = 0 }: { position?: [number, number, number]; scale?: number; rotationY?: number }) {
   const pos: [number, number, number] = position ?? [1.5, -0.1, -1.5]
-  const gltf = useGLTF('/jfour.glb')
+  const gltf = useGLTF('/j4final.glb')
   const { actions } = useAnimations(gltf.animations, gltf.scene)
 
   useEffect(() => {
     if (!actions) return
+    // Loop all top-level actions
     Object.values(actions).forEach(action => {
       if (!action) return
       action.reset()
@@ -39,29 +32,25 @@ function Model({
       action.fadeIn(0.5)
       action.play()
     })
-  }, [actions])
+    // Traverse all nodes to catch any nested node actions
+    gltf.scene.traverse(obj => {
+      const nodeActions = (obj as any).userData?.actions
+      if (nodeActions) {
+        Object.values(nodeActions).forEach((action: THREE.AnimationAction) => {
+          if (!action) return
+          action.reset()
+          action.setLoop(THREE.LoopRepeat, Infinity)
+          action.fadeIn(0.5)
+          action.play()
+        })
+      }
+    })
+  }, [actions, gltf.scene])
 
-  return (
-    <primitive
-      object={gltf.scene}
-      position={pos}
-      scale={scale}
-      rotation-y={rotationY}
-    />
-  )
+  return <primitive object={gltf.scene} position={pos} scale={scale} rotation-y={rotationY} />
 }
 
-function Rope({
-  start,
-  end,
-  radius = 0.03,
-  color = '#F5F507',
-}: {
-  start: [number, number, number]
-  end: [number, number, number]
-  radius?: number
-  color?: string
-}) {
+function Rope({ start, end, radius = 0.03, color = '#F5F507' }: { start: [number, number, number]; end: [number, number, number]; radius?: number; color?: string }) {
   const dir = new THREE.Vector3(...end).sub(new THREE.Vector3(...start))
   const length = dir.length()
   const mid = new THREE.Vector3(...start).add(dir.multiplyScalar(0.5))
@@ -94,7 +83,7 @@ function FloorBlock({ position }: { position?: [number, number, number] }) {
   const stepWidth = 10
   const floorSize = 9
 
-  const floorEdges: { start: [number, number, number]; end: [number, number, number] }[] = [
+  const floorEdges = [
     { start: [-floorSize / 2, stepHeight + 0.03, floorSize / 2], end: [floorSize / 2, stepHeight + 0.03, floorSize / 2] },
     { start: [-floorSize / 2, stepHeight + 0.03, -floorSize / 2], end: [floorSize / 2, stepHeight + 0.03, -floorSize / 2] },
     { start: [floorSize / 2, stepHeight + 0.03, -floorSize / 2], end: [floorSize / 2, stepHeight + 0.03, floorSize / 2] },
@@ -104,13 +93,12 @@ function FloorBlock({ position }: { position?: [number, number, number] }) {
   return (
     <group position={pos}>
       {[2, 1, 0].map(i => (
-        <mesh key={i} position={[0, -stepHeight * i, 0] as [number, number, number]} receiveShadow castShadow>
+        <mesh key={i} position={[0, -stepHeight * i, 0]} receiveShadow castShadow>
           <boxGeometry args={[stepWidth * (0.9 + i * 0.05), stepHeight, stepDepth * (0.9 + i * 0.05)]} />
           <meshStandardMaterial color={`#${(7 + i).toString().repeat(3)}`} />
         </mesh>
       ))}
-
-      <mesh rotation-x={-Math.PI / 2} position={[0, stepHeight * 0.5, 0] as [number, number, number]} receiveShadow castShadow>
+      <mesh rotation-x={-Math.PI / 2} position={[0, stepHeight * 0.5, 0]} receiveShadow castShadow>
         <planeGeometry args={[floorSize, floorSize, 32, 32]} />
         <meshStandardMaterial
           map={diffuse}
@@ -120,17 +108,13 @@ function FloorBlock({ position }: { position?: [number, number, number] }) {
           displacementScale={0.05}
         />
       </mesh>
-
-      {floorEdges.map((edge, idx) => (
-        <Rope key={idx} start={edge.start} end={edge.end} />
-      ))}
+      {floorEdges.map((edge, idx) => <Rope key={idx} start={edge.start} end={edge.end} />)}
     </group>
   )
 }
 
 function Wall({ position, rotationY = 0 }: { position?: [number, number, number]; rotationY?: number }) {
   const pos: [number, number, number] = position ?? [0, 2.5, -5]
-
   const meshRef = useRef<THREE.Mesh>(null)
   const texture = useLoader(THREE.TextureLoader, '/wall.jpg')
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping
@@ -160,20 +144,18 @@ function Wall({ position, rotationY = 0 }: { position?: [number, number, number]
     })
   ).current
 
-  useFrame(({ clock }) => {
-    material.uniforms.time.value = clock.getElapsedTime()
-  })
+  useFrame(({ clock }) => { material.uniforms.time.value = clock.getElapsedTime() })
 
   const wallWidth = 10
   const wallHeight = 5
   const trimOffset = 0.05
 
-  const wallTrims: { start: [number, number, number]; end: [number, number, number] }[] = [
+  const wallTrims = [
     { start: [-wallWidth / 2, wallHeight / 2 - trimOffset, 0], end: [wallWidth / 2, wallHeight / 2 - trimOffset, 0] },
     { start: [-wallWidth / 2, -wallHeight / 2 + trimOffset, 0], end: [wallWidth / 2, -wallHeight / 2 + trimOffset, 0] },
   ]
 
-  const verticalRopes: { start: [number, number, number]; end: [number, number, number] }[] = [
+  const verticalRopes = [
     { start: [-wallWidth / 2, -wallHeight / 2 + trimOffset, 0], end: [-wallWidth / 2, wallHeight / 2 - trimOffset, 0] },
     { start: [wallWidth / 2, -wallHeight / 2 + trimOffset, 0], end: [wallWidth / 2, wallHeight / 2 - trimOffset, 0] },
   ]
@@ -184,13 +166,8 @@ function Wall({ position, rotationY = 0 }: { position?: [number, number, number]
         <planeGeometry args={[wallWidth, wallHeight]} />
         <primitive object={material} attach="material" />
       </mesh>
-
-      {wallTrims.map((trim, idx) => (
-        <Rope key={`trim-${idx}`} start={trim.start} end={trim.end} />
-      ))}
-      {verticalRopes.map((rope, idx) => (
-        <Rope key={`vert-${idx}`} start={rope.start} end={rope.end} />
-      ))}
+      {wallTrims.map((trim, idx) => <Rope key={`trim-${idx}`} start={trim.start} end={trim.end} />)}
+      {verticalRopes.map((rope, idx) => <Rope key={`vert-${idx}`} start={rope.start} end={rope.end} />)}
     </group>
   )
 }
@@ -207,12 +184,7 @@ export default function Scene({
   ambientLightIntensity,
 }: SceneProps) {
   return (
-    <Canvas
-      shadows
-      camera={{ position: [-8, 5, 8], fov: 60 }}
-      gl={{ antialias: true }}
-      onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000))}
-    >
+    <Canvas shadows camera={{ position: [-8, 5, 8], fov: 60 }} gl={{ antialias: true }} onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000))}>
       <ambientLight intensity={ambientLightIntensity ?? 1.2} />
       <directionalLight
         position={directionalLightPosition ?? [5, 10, 7]}
@@ -229,17 +201,14 @@ export default function Scene({
       <Wall position={sideWallPosition ?? [5, 2.5, 0]} rotationY={Math.PI / 2} />
 
       <Suspense fallback={null}>
-        <Model
-          position={modelPosition ?? [1.5, -0.1, -1.5]}
-          scale={modelScale}
-          rotationY={modelRotationY}
-        />
+        <Model position={modelPosition ?? [1.5, -0.1, -1.5]} scale={modelScale} rotationY={modelRotationY} />
       </Suspense>
 
       <OrbitControls enableDamping target={[-0.7, 0.5, -0.5]} />
     </Canvas>
   )
 }
+
 
 
 
