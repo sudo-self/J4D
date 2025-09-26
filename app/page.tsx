@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react'
 import Scene from '@/components/Scene'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-// Smoke component
-function Smoke({ position = [0, 0, 0], count = 200 }) {
+// ==================== SMOKE ====================
+function Smoke({ position = [0, 0, 0], count = 200 }: { position?: [number, number, number]; count?: number }) {
   const particles = useRef<THREE.Points>(null)
 
   const positions = useMemo(() => {
@@ -36,7 +36,7 @@ function Smoke({ position = [0, 0, 0], count = 200 }) {
   })
 
   return (
-    <points ref={particles} position={position}>
+    <points ref={particles} position={position as [number, number, number]}>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
@@ -45,6 +45,7 @@ function Smoke({ position = [0, 0, 0], count = 200 }) {
   )
 }
 
+// ==================== HOME PAGE ====================
 export default function Home() {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
   const [lightIntensity, setLightIntensity] = useState({ directional: 1.8, ambient: 1 })
@@ -85,6 +86,7 @@ export default function Home() {
     </div>
   )
 }
+
 
 
 
