@@ -6,7 +6,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
 // ==================== SMOKE ====================
-function Smoke({ position = [3, 1, -3], count = 200 }: { position?: [number, number, number]; count?: number }) {
+function Smoke({ position = [10, 1, -6], count = 200 }: { position?: [number, number, number]; count?: number }) {
   const particles = useRef<THREE.Points>(null)
 
   const positions = useMemo(() => {
@@ -40,7 +40,7 @@ function Smoke({ position = [3, 1, -3], count = 200 }: { position?: [number, num
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      <pointsMaterial color="white" size={0.05} transparent opacity={0.6} depthWrite={false} />
+      <pointsMaterial color="#0018F9" size={0.05} transparent opacity={0.6} depthWrite={false} />
     </points>
   )
 }
@@ -81,11 +81,12 @@ export default function Home() {
         directionalLightIntensity={lightIntensity.directional}
         ambientLightIntensity={lightIntensity.ambient}
       >
-        <Smoke position={[1, 0.5, -2]} count={200} />
+        <Smoke position={[2.1, 0.5, 1.8]} count={200} />
       </Scene>
     </div>
   )
 }
+
 
 
 
