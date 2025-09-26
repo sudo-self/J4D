@@ -73,7 +73,7 @@ function Rope({
   start,
   end,
   radius = 0.03,
-  color = '#F5F507',
+  color = '#0018F9',
 }: {
   start: [number, number, number]
   end: [number, number, number]
