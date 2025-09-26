@@ -27,7 +27,7 @@ function Model({
   rotationY?: number
 }) {
   const pos: [number, number, number] = position ?? [1.5, -0.1, -1.5]
-  const gltf = useGLTF('/jjjj.glb')
+  const gltf = useGLTF('/jfour.glb')
   const { actions } = useAnimations(gltf.animations, gltf.scene)
 
   useEffect(() => {
