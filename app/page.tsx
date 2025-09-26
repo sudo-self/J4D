@@ -5,11 +5,22 @@ import Scene from '@/components/Scene'
 
 export default function Home() {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
+  const [lightIntensity, setLightIntensity] = useState({ directional: 1.8, ambient: 1 })
 
   useEffect(() => {
     function handleResize() {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight })
+      const width = window.innerWidth
+      const height = window.innerHeight
+      setWindowSize({ width, height })
+
+
+      if (width < 768) {
+        setLightIntensity({ directional: 2.0, ambient: 1.2 })
+      } else {
+        setLightIntensity({ directional: 1.9, ambient: 1.1 }) 
+      }
     }
+
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
@@ -25,11 +36,12 @@ export default function Home() {
         backWallPosition={[0, 2, -5]}
         sideWallPosition={[5, 2, 0]}
         directionalLightPosition={[5, 12, 7]}
-        directionalLightIntensity={1.8}
-        ambientLightIntensity={1}
+        directionalLightIntensity={lightIntensity.directional}
+        ambientLightIntensity={lightIntensity.ambient}
       />
     </div>
   )
 }
+
 
 
