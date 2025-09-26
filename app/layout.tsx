@@ -37,8 +37,8 @@ export default function RootLayout({
       >
         {children}
 
-        <footer className="fixed bottom-4 left-0 w-full text-center text-gray-400 hover:text-yellow-400 transition-colors duration-300 cursor-pointer z-50">
-          Jesse3d.pages.dev
+        <footer className="fixed bottom-4 left-0 w-full text-center text-white hover:text-yellow-400 transition-colors duration-300 cursor-pointer z-50">
+          Jesse3d.vercel.app
         </footer>
       </body>
     </html>
