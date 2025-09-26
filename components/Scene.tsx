@@ -208,7 +208,7 @@ function Wall({ position, rotationY = 0 }: { position?: [number, number, number]
 }
 
 // ==================== SMOKE ====================
-export function Smoke({ position = [0, 0, 0], count = 200 }) {
+export function Smoke({ position = [0, 0, 0], count = 200 }: { position?: [number, number, number]; count?: number }) {
   const particles = useRef<THREE.Points>(null)
 
   const positions = useMemo(() => {
@@ -238,7 +238,7 @@ export function Smoke({ position = [0, 0, 0], count = 200 }) {
   })
 
   return (
-    <points ref={particles} position={position}>
+    <points ref={particles} position={position as [number, number, number]}>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
@@ -290,12 +290,13 @@ export default function Scene({
         />
       </Suspense>
 
-      {children} 
+      {children}
 
       <OrbitControls enableDamping target={[-0.7, 0.5, -0.5]} />
     </Canvas>
   )
 }
+
 
 
 
