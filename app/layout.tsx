@@ -38,7 +38,7 @@ export default function RootLayout({
         {children}
 
         <footer className="fixed bottom-4 left-0 w-full text-center text-white hover:text-yellow-400 transition-colors duration-300 cursor-pointer z-50">
-          🪙 @react-three/fiber
+        ᴶᵉˢˢᵉ³ᵈ @𝕣𝕖𝕒𝕔𝕥-𝕥𝕙𝕣𝕖𝕖/𝕗𝕚𝕓𝕖𝕣
         </footer>
       </body>
     </html>
