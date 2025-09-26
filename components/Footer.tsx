@@ -18,12 +18,12 @@ export default function Footer() {
   return (
     <footer className="fixed bottom-4 left-0 w-full text-center text-white z-50">
       <a
-        href="https://j3d.jessejesse.com"
+        href="https://j4d.jessejesse.com"
         target="_blank"
         rel="noopener noreferrer"
         className="mb-2 inline-block text-gray-50 hover:text-yellow-400 transition-colors duration-300 cursor-pointer"
       >
-     𝕁3𝔻.𝕁𝕖𝕤𝕤𝕖𝕁𝕖𝕤𝕤𝕖.𝕔𝕠𝕞
+     𝕁4𝔻.𝕁𝕖𝕤𝕤𝕖𝕁𝕖𝕤𝕤𝕖.𝕔𝕠𝕞
       </a>
 
       <div>
