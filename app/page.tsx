@@ -6,7 +6,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
 // ==================== SMOKE ====================
-function Smoke({ position = [0, 0, 0], count = 200 }: { position?: [number, number, number]; count?: number }) {
+function Smoke({ position = [0, 1, 3], count = 200 }: { position?: [number, number, number]; count?: number }) {
   const particles = useRef<THREE.Points>(null)
 
   const positions = useMemo(() => {
