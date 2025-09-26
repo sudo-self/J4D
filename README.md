@@ -1,6 +1,6 @@
-# Jesse3D
+# J4D
 
-**Jesse3D** is a Next.js project showcasing a 3D model viewer powered by **Three.js** and `@react-three/fiber`. The scene includes a model, floor, walls with glowing ropes, and a dynamic camera, all fully interactive with orbit controls.
+**Jesse4D** is a Next.js project showcasing a 3D model viewer powered by **Three.js** and `@react-three/fiber`. The scene includes a model, floor, walls with glowing ropes, and a dynamic camera, all fully interactive with orbit controls.
 
 ---
 
@@ -17,6 +17,6 @@
 
 ## Demo
 
- [Jesse3d](https://jesse3d.vercel.app/)
+ [J4D.JesseJesse.com](https://j4d.jessejesse.com/)
 
 ---
