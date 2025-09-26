@@ -33,7 +33,7 @@ function Model({
   const { actions } = useAnimations(gltf.animations, gltf.scene)
 
   useEffect(() => {
-    // Play top-level actions
+   
     if (actions) {
       Object.values(actions).forEach(action => {
         if (!action) return
@@ -44,7 +44,7 @@ function Model({
       })
     }
 
-    // Traverse all nodes for nested actions
+ 
     gltf.scene.traverse(obj => {
       const nodeActions = (obj as any).userData?.actions
       if (nodeActions) {
