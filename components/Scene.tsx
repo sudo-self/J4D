@@ -1,8 +1,8 @@
 'use client'
 
 import { Canvas, useLoader, useFrame } from '@react-three/fiber'
-import { OrbitControls, useGLTF } from '@react-three/drei'
-import { Suspense, useRef } from 'react'
+import { OrbitControls, useGLTF, useAnimations } from '@react-three/drei'
+import { Suspense, useRef, useEffect } from 'react'
 import * as THREE from 'three'
 
 interface SceneProps {
@@ -28,7 +28,26 @@ function Model({
 }) {
   const pos: [number, number, number] = position ?? [1.5, -0.1, -1.5]
   const gltf = useGLTF('/j3d.glb')
-  return <primitive object={gltf.scene} position={pos} scale={scale} rotation-y={rotationY} />
+  const { actions } = useAnimations(gltf.animations, gltf.scene)
+
+
+  useEffect(() => {
+    if (actions) {
+      const firstAction = Object.values(actions)[0]
+      if (firstAction) {
+        firstAction.reset().fadeIn(0.5).play()
+      }
+    }
+  }, [actions])
+
+  return (
+    <primitive
+      object={gltf.scene}
+      position={pos}
+      scale={scale}
+      rotation-y={rotationY}
+    />
+  )
 }
 
 function Rope({
@@ -191,7 +210,7 @@ export default function Scene({
       shadows
       camera={{ position: [-8, 5, 8], fov: 60 }}
       gl={{ antialias: true }}
-      onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000))} 
+      onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000))}
     >
       <ambientLight intensity={ambientLightIntensity ?? 1.2} />
       <directionalLight
@@ -209,12 +228,17 @@ export default function Scene({
       <Wall position={sideWallPosition ?? [5, 2.5, 0]} rotationY={Math.PI / 2} />
 
       <Suspense fallback={null}>
-        <Model position={modelPosition ?? [1.5, -0.1, -1.5]} scale={modelScale} rotationY={modelRotationY} />
+        <Model
+          position={modelPosition ?? [1.5, -0.1, -1.5]}
+          scale={modelScale}
+          rotationY={modelRotationY}
+        />
       </Suspense>
 
       <OrbitControls enableDamping target={[-0.7, 0.5, -0.5]} />
     </Canvas>
   )
 }
+
 
 
