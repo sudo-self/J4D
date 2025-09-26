@@ -1,10 +1,8 @@
-
-
 'use client'
 
 import { Canvas, useLoader, useFrame } from '@react-three/fiber'
 import { OrbitControls, useGLTF, useAnimations } from '@react-three/drei'
-import { Suspense, useRef, useEffect } from 'react'
+import { Suspense, useRef, useEffect, useMemo } from 'react'
 import * as THREE from 'three'
 
 interface SceneProps {
@@ -17,8 +15,10 @@ interface SceneProps {
   directionalLightPosition?: [number, number, number]
   directionalLightIntensity?: number
   ambientLightIntensity?: number
+  children?: React.ReactNode
 }
 
+// ==================== MODEL ====================
 function Model({
   position,
   scale = 1,
@@ -33,7 +33,6 @@ function Model({
   const { actions } = useAnimations(gltf.animations, gltf.scene)
 
   useEffect(() => {
-   
     if (actions) {
       Object.values(actions).forEach(action => {
         if (!action) return
@@ -44,7 +43,6 @@ function Model({
       })
     }
 
- 
     gltf.scene.traverse(obj => {
       const nodeActions = (obj as any).userData?.actions
       if (nodeActions) {
@@ -59,16 +57,10 @@ function Model({
     })
   }, [actions, gltf.scene])
 
-  return (
-    <primitive
-      object={gltf.scene}
-      position={pos}
-      scale={scale}
-      rotation-y={rotationY}
-    />
-  )
+  return <primitive object={gltf.scene} position={pos} scale={scale} rotation-y={rotationY} />
 }
 
+// ==================== ROPE ====================
 function Rope({
   start,
   end,
@@ -94,6 +86,7 @@ function Rope({
   )
 }
 
+// ==================== FLOOR ====================
 function FloorBlock({ position }: { position?: [number, number, number] }) {
   const pos: [number, number, number] = position ?? [0, -1, 0]
 
@@ -122,13 +115,13 @@ function FloorBlock({ position }: { position?: [number, number, number] }) {
   return (
     <group position={pos}>
       {[2, 1, 0].map(i => (
-        <mesh key={i} position={[0, -stepHeight * i, 0] as [number, number, number]} receiveShadow castShadow>
+        <mesh key={i} position={[0, -stepHeight * i, 0]} receiveShadow castShadow>
           <boxGeometry args={[stepWidth * (0.9 + i * 0.05), stepHeight, stepDepth * (0.9 + i * 0.05)]} />
           <meshStandardMaterial color={`#${(7 + i).toString().repeat(3)}`} />
         </mesh>
       ))}
 
-      <mesh rotation-x={-Math.PI / 2} position={[0, stepHeight * 0.5, 0] as [number, number, number]} receiveShadow castShadow>
+      <mesh rotation-x={-Math.PI / 2} position={[0, stepHeight * 0.5, 0]} receiveShadow castShadow>
         <planeGeometry args={[floorSize, floorSize, 32, 32]} />
         <meshStandardMaterial
           map={diffuse}
@@ -146,6 +139,7 @@ function FloorBlock({ position }: { position?: [number, number, number] }) {
   )
 }
 
+// ==================== WALL ====================
 function Wall({ position, rotationY = 0 }: { position?: [number, number, number]; rotationY?: number }) {
   const pos: [number, number, number] = position ?? [0, 2.5, -5]
 
@@ -213,6 +207,47 @@ function Wall({ position, rotationY = 0 }: { position?: [number, number, number]
   )
 }
 
+// ==================== SMOKE ====================
+export function Smoke({ position = [0, 0, 0], count = 200 }) {
+  const particles = useRef<THREE.Points>(null)
+
+  const positions = useMemo(() => {
+    const arr = new Float32Array(count * 3)
+    for (let i = 0; i < count; i++) {
+      arr[i * 3 + 0] = (Math.random() - 0.5) * 0.1
+      arr[i * 3 + 1] = Math.random() * 0.5
+      arr[i * 3 + 2] = (Math.random() - 0.5) * 0.1
+    }
+    return arr
+  }, [count])
+
+  const velocities = useMemo(() => {
+    const arr = new Float32Array(count)
+    for (let i = 0; i < count; i++) arr[i] = 0.01 + Math.random() * 0.01
+    return arr
+  }, [count])
+
+  useFrame(() => {
+    if (!particles.current) return
+    const posArray = particles.current.geometry.attributes.position.array as Float32Array
+    for (let i = 0; i < count; i++) {
+      posArray[i * 3 + 1] += velocities[i]
+      if (posArray[i * 3 + 1] > 1) posArray[i * 3 + 1] = 0
+    }
+    particles.current.geometry.attributes.position.needsUpdate = true
+  })
+
+  return (
+    <points ref={particles} position={position}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+      </bufferGeometry>
+      <pointsMaterial color="white" size={0.05} transparent opacity={0.6} depthWrite={false} />
+    </points>
+  )
+}
+
+// ==================== SCENE ====================
 export default function Scene({
   modelPosition,
   modelScale,
@@ -223,6 +258,7 @@ export default function Scene({
   directionalLightPosition,
   directionalLightIntensity,
   ambientLightIntensity,
+  children,
 }: SceneProps) {
   return (
     <Canvas
@@ -254,10 +290,13 @@ export default function Scene({
         />
       </Suspense>
 
+      {children} 
+
       <OrbitControls enableDamping target={[-0.7, 0.5, -0.5]} />
     </Canvas>
   )
 }
+
 
 
 
