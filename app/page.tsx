@@ -29,7 +29,7 @@ export default function Home() {
   return (
     <div style={{ width: windowSize.width, height: windowSize.height }}>
       <Scene
-        modelPosition={[1, -1.2, -2]}
+        modelPosition={[1, -1.4, -2]}
         modelScale={2.0}
         modelRotationY={-4 * (Math.PI / 180)}
         floorPosition={[0, -0.6, 0]}
