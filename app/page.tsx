@@ -5,10 +5,11 @@ import { useFrame } from '@react-three/fiber'
 import Scene from '@/components/Scene'
 import * as THREE from 'three'
 
-
+// ---------------- Smoke Component ----------------
 function Smoke({ position = [0, 0, 0], count = 150 }: { position?: [number, number, number]; count?: number }) {
   const particles = useRef<THREE.Points>(null)
 
+  // Particle positions
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3)
     for (let i = 0; i < count; i++) {
@@ -19,12 +20,14 @@ function Smoke({ position = [0, 0, 0], count = 150 }: { position?: [number, numb
     return arr
   }, [count])
 
+  // Particle upward velocities
   const velocities = useMemo(() => {
     const arr = new Float32Array(count)
     for (let i = 0; i < count; i++) arr[i] = 0.01 + Math.random() * 0.01
     return arr
   }, [count])
 
+  // Animate particles
   useFrame(() => {
     if (!particles.current) return
     const posArray = particles.current.geometry.attributes.position.array as Float32Array
@@ -38,13 +41,14 @@ function Smoke({ position = [0, 0, 0], count = 150 }: { position?: [number, numb
   return (
     <points ref={particles} position={position}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={positions.length / 3} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial color="white" size={0.05} transparent opacity={0.6} depthWrite={false} />
     </points>
   )
 }
 
+// ---------------- Home Component ----------------
 export default function Home() {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
   const [lightIntensity, setLightIntensity] = useState({ directional: 1.8, ambient: 1 })
@@ -86,12 +90,13 @@ export default function Home() {
         directionalLightIntensity={lightIntensity.directional}
         ambientLightIntensity={lightIntensity.ambient}
       >
-        {/* Smoke at the tip of the model */}
-        <Smoke position={[1, 0.5, -5]} count={200} />
+        {/* Smoke positioned at the tip of your model */}
+        <Smoke position={[1, 0.5, -2]} count={200} />
       </Scene>
     </div>
   )
 }
+
 
 
 
