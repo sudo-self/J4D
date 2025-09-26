@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useRef, useMemo } from 'react'
 import Scene from '@/components/Scene'
 import { useFrame } from '@react-three/fiber'
