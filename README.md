@@ -17,6 +17,6 @@
 
 ## Demo
 
-Visit: [Jesse3d.pages.dev](https://jesse3d.pages.dev)
+ [Jesse3d](https://jesse3d.vercel.app/)
 
 ---
