@@ -4,14 +4,23 @@ import { useEffect } from 'react'
 
 export default function Footer() {
   useEffect(() => {
-    if (!(window as any).GitHubButton) {
-      const script = document.createElement("script")
-      script.src = "https://buttons.github.io/buttons.js"
+    // Check if GitHub buttons script is already loaded
+    const renderGitHubButton = () => {
+      if ((window as any).GitHubButton) {
+        (window as any).GitHubButton.render()
+      }
+    }
+
+    const existingScript = document.querySelector('script[src="https://buttons.github.io/buttons.js"]')
+    if (!existingScript) {
+      const script = document.createElement('script')
+      script.src = 'https://buttons.github.io/buttons.js'
       script.async = true
       script.defer = true
+      script.onload = renderGitHubButton
       document.body.appendChild(script)
     } else {
-      (window as any).GitHubButton.render()
+      renderGitHubButton()
     }
   }, [])
 
@@ -23,7 +32,7 @@ export default function Footer() {
         rel="noopener noreferrer"
         className="mb-2 inline-block text-gray-50 hover:text-yellow-400 transition-colors duration-300 cursor-pointer"
       >
-     𝕁4𝔻.𝕁𝕖𝕤𝕤𝕖𝕁𝕖𝕤𝕤𝕖.𝕔𝕠𝕞
+        𝕁4𝔻.𝕁𝕖𝕤𝕤𝕖𝕁𝕖𝕤𝕤𝕖.𝕔𝕠𝕞
       </a>
 
       <div>
