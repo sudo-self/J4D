@@ -139,7 +139,7 @@ function FloorBlock({ position }: { position?: [number, number, number] }) {
   )
 }
 
-// ==================== WALL ====================
+// ==================== SHADER ====================
 function Wall({ position, rotationY = 0 }: { position?: [number, number, number]; rotationY?: number }) {
   const pos: [number, number, number] = position ?? [0, 2.5, -5]
 
@@ -207,7 +207,7 @@ function Wall({ position, rotationY = 0 }: { position?: [number, number, number]
   )
 }
 
-// ==================== SMOKE ====================
+// ==================== WATER ====================
 export function Smoke({ position = [0, 0, 0], count = 200 }: { position?: [number, number, number]; count?: number }) {
   const particles = useRef<THREE.Points>(null)
 
@@ -247,7 +247,7 @@ export function Smoke({ position = [0, 0, 0], count = 200 }: { position?: [numbe
   )
 }
 
-// ==================== SCENE ====================
+// ==================== THREE JS ====================
 export default function Scene({
   modelPosition,
   modelScale,
