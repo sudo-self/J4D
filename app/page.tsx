@@ -21,7 +21,6 @@ function Smoke({
 }) {
   const particles = useRef<THREE.Points>(null)
 
-
   const { positions, velocities } = useMemo(() => {
     const pos = new Float32Array(count * 3)
     const vel = new Float32Array(count)
@@ -62,7 +61,6 @@ export default function Home() {
       const width = window.innerWidth
       const height = window.innerHeight
       setWindowSize({ width, height })
-
       setLightIntensity(width < 768 ? { directional: 2.0, ambient: 1.2 } : { directional: 1.9, ambient: 1.1 })
     }
 
@@ -72,13 +70,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div
-      style={{
-        width: windowSize.width || '100vw',
-        height: windowSize.height || '100vh',
-        overflow: 'hidden',
-      }}
-    >
+    <div style={{ width: windowSize.width || '100vw', height: windowSize.height || '100vh', overflow: 'hidden' }}>
       <Scene
         modelPosition={[1, -1.3, -2]}
         modelScale={2.0}
@@ -90,7 +82,6 @@ export default function Home() {
         directionalLightIntensity={lightIntensity.directional}
         ambientLightIntensity={lightIntensity.ambient}
       >
-  
         <Smoke position={[1.8, 0.4, 1.7]} count={250} color="#0018F9" spread={0.6} height={2.0} />
         <Smoke position={[2.3, 0.9, 1.7]} count={250} color="#3399FF" spread={0.6} height={2.0} />
         <Smoke position={[2.5, 1.1, 1.7]} count={250} color="#3399FF" spread={0.6} height={1.0} />
