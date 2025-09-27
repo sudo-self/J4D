@@ -5,23 +5,35 @@ import Scene from '@/components/Scene'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-// ==================== SMOKE ====================
-function Smoke({ position = [10, 1, -6], count = 200 }: { position?: [number, number, number]; count?: number }) {
+// ==================== WATER ====================
+function Smoke({
+  position = [10, 1, -6],
+  count = 400,
+  color = '#0018F9',
+  spread = 0.8,
+  height = 3.0,
+}: {
+  position?: [number, number, number]
+  count?: number
+  color?: string
+  spread?: number
+  height?: number
+}) {
   const particles = useRef<THREE.Points>(null)
 
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3)
     for (let i = 0; i < count; i++) {
-      arr[i * 3 + 0] = (Math.random() - 0.5) * 0.1
-      arr[i * 3 + 1] = Math.random() * 0.5
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 0.1
+      arr[i * 3 + 0] = (Math.random() - 0.5) * spread 
+      arr[i * 3 + 1] = Math.random() * height         
+      arr[i * 3 + 2] = (Math.random() - 0.5) * spread 
     }
     return arr
-  }, [count])
+  }, [count, spread, height])
 
   const velocities = useMemo(() => {
     const arr = new Float32Array(count)
-    for (let i = 0; i < count; i++) arr[i] = 0.01 + Math.random() * 0.01
+    for (let i = 0; i < count; i++) arr[i] = 0.001 + Math.random() * 0.01
     return arr
   }, [count])
 
@@ -30,7 +42,7 @@ function Smoke({ position = [10, 1, -6], count = 200 }: { position?: [number, nu
     const posArray = particles.current.geometry.attributes.position.array as Float32Array
     for (let i = 0; i < count; i++) {
       posArray[i * 3 + 1] += velocities[i]
-      if (posArray[i * 3 + 1] > 1) posArray[i * 3 + 1] = 0
+      if (posArray[i * 3 + 1] > height) posArray[i * 3 + 1] = 0
     }
     particles.current.geometry.attributes.position.needsUpdate = true
   })
@@ -40,12 +52,13 @@ function Smoke({ position = [10, 1, -6], count = 200 }: { position?: [number, nu
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      <pointsMaterial color="#0018F9" size={0.05} transparent opacity={0.6} depthWrite={false} />
+      <pointsMaterial color={color} size={0.05} transparent opacity={0.6} depthWrite={false} />
     </points>
   )
 }
 
-// ==================== HOME PAGE ====================
+// ==================== PAGE.TSX ====================
+
 export default function Home() {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
   const [lightIntensity, setLightIntensity] = useState({ directional: 1.8, ambient: 1 })
@@ -81,12 +94,14 @@ export default function Home() {
         directionalLightIntensity={lightIntensity.directional}
         ambientLightIntensity={lightIntensity.ambient}
       >
-        <Smoke position={[2.1, 0.5, 1.8]} count={200} />
+    
+        <Smoke position={[1.8, 0.4, 1.7]} count={250} color="#0018F9" spread={0.60} height={2.0} />
+        <Smoke position={[2.3, 0.9, 1.7]} count={250} color="#3399FF" spread={0.60} height={2.0} />
+        <Smoke position={[2.5, 1.1, 1.7]} count={250} color="#3399FF" spread={0.60} height={1.0} />
       </Scene>
     </div>
   )
 }
-
 
 
 
