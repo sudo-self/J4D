@@ -1,26 +1,26 @@
 import Footer from '@/components/Footer'
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next'
+import { Geist, Geist_Mono } from 'next/font/google'
+import './globals.css'
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] })
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] })
+const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
+const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Jesse 4D",
-  description: "Jesse 4D with Three.js",
+  title: 'Jesse 4D',
+  description: 'Jesse 4D with Three.js',
   openGraph: {
-    url: "https://j4d.jessejesse.com",
-    title: "J4d",
-    description: "Explore 3D models in Three.js with Jesse 4D",
-    siteName: "Jesse 4D",
-    images: [{ url: "/J3d.png", width: 1200, height: 630, alt: "Jesse 4D Preview" }],
+    url: 'https://j4d.jessejesse.com',
+    title: 'J4d',
+    description: 'Explore 3D models in Three.js with Jesse 4D',
+    siteName: 'Jesse 4D',
+    images: [{ url: '/J3d.png', width: 1200, height: 630, alt: 'Jesse 4D Preview' }],
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Jesse 4D",
-    description: "Explore 3D models in Three.js with Jesse 4D",
-    images: ["/J3d.png"],
+    card: 'summary_large_image',
+    title: 'Jesse 4D',
+    description: 'Explore 3D models in Three.js with Jesse 4D',
+    images: ['/J3d.png'],
   },
 }
 
