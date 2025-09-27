@@ -4,15 +4,15 @@ import { useEffect } from 'react'
 
 export default function Footer() {
   useEffect(() => {
- 
+    // Check if GitHub buttons script is already loaded
     const renderGitHubButton = () => {
-      if ((window as any).GitHubButton?.render) {
+      if ((window as any).GitHubButton) {
         (window as any).GitHubButton.render()
       }
     }
 
-
-    if (!document.querySelector('script[src="https://buttons.github.io/buttons.js"]')) {
+    const existingScript = document.querySelector('script[src="https://buttons.github.io/buttons.js"]')
+    if (!existingScript) {
       const script = document.createElement('script')
       script.src = 'https://buttons.github.io/buttons.js'
       script.async = true
@@ -50,3 +50,4 @@ export default function Footer() {
     </footer>
   )
 }
+
